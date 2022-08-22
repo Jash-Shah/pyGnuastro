@@ -10,4 +10,4 @@ class TestCosmology:
     assert pygnuastro.cosmology.age(3) == 2.1483618980550068
 
   def test_velocity_from_z(self):
-    assert pygnuastro.velocity_from_z(5) == 283587.4602702703
+    assert pygnuastro.cosmology.velocity_from_z(5) == 283587.4602702703

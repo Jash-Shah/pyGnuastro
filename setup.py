@@ -8,12 +8,16 @@ from setuptools import setup, Extension
 
 # Initialization
 # ==============
-# A short description of the Gnuastro Python package.
-descp = "A package of library functions for \
-          astronomical data manipulation and analysis."
-
 # Get the absolute path for the current directory
 here = os.path.abspath(os.path.dirname(__file__))
+
+
+
+# Description of the Gnuastro Python package.
+with open(here+"/README.md") as readme:
+  long_descp = readme.read()
+
+
 
 # Get the paths to where the gnuastro library(libgnuastro),
 # the source files(.h) and the extension modules(.c)
@@ -57,9 +61,9 @@ cosmology = Extension(name='cosmology',
 
 
 
-fits = Extension(name='fits',
-                 sources=[f'{src_dir}/fits.c'],
-                 **default_ext_args)
+# fits = Extension(name='fits',
+#                  sources=[f'{src_dir}/fits.c'],
+#                  **default_ext_args)
 
 
 
@@ -71,7 +75,8 @@ fits = Extension(name='fits',
 # It uses the metadata passed as arguments to describe the Python Package
 setup(name="pygnuastro",
       version=f'0.18',
-      description=descp,
+      long_description=long_descp,
+      long_description_content_type="text/markdown",
       author="Mohammad Akhlaghi",
       author_email="mohammad@akhlaghi.org",
       url="http://www.gnu.org/software/gnuastro/manual/",

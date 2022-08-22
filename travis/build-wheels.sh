@@ -12,10 +12,11 @@ VERSION=0.18
 
 # Downloads, builds and installs gnuastro.
 function setup_gnuastro(){
+    cd /io
     # Make the version of Python same as version of Gnuastro.
     wget -c http://ftpmirror.gnu.org/gnuastro/gnuastro-$VERSION.tar.gz \
-    -O - | tar -xz
-    cd /io/gnuastro*
+    -O - | tar -xz 
+    cd gnuastro*
     # Not added --disable-shared since its giving errors in 
     # CentOS. Check out bug#62904.
     ./configure
@@ -54,9 +55,10 @@ function setup_cfitsio(){
 
 # Downloads, builds and installs wcslib.
 function setup_wcslib(){
-    wget -c http://www.atnf.csiro.au/people/mcalabre/WCS/wcslib-7.11.tar.bz2
-    tar xf wcs*
-    cd wcs*
+    cd /io
+    wget -c http://www.atnf.csiro.au/people/mcalabre/WCS/wcslib-7.11.tar.bz2 \
+    -O - | tar xj wcs*
+    cd wcslib*
     # Build instructions taken from:
     # https://www.gnu.org/software/gnuastro/manual/html_node/WCSLIB.html
     ./configure LIBS="-pthread -lm" --without-pgplot     \
@@ -174,7 +176,7 @@ function show_wheels(){
 
 function clean_system(){
     rm -rf "gnuastro-$VERSION/" wcslib* cfitsio* build/ pygnuastro.egg-info/
-    find /io/wheelhouse/ -type f \! -name "*manylinux*" | xargs rm -f
+    rm -fv wheelhouse/*-linux_*.whl
 }
 
 
