@@ -1,0 +1,4 @@
+numpy
+tox
+setuptools
+pytest

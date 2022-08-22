@@ -1,0 +1,189 @@
+#!/bin/bash
+
+# Called inside the manylinux image
+echo "Started $0 $@"
+
+set -e -u -x
+VERSION=0.18
+
+
+
+
+
+# Downloads, builds and installs gnuastro.
+function setup_gnuastro(){
+    # Make the version of Python same as version of Gnuastro.
+    wget -c http://ftpmirror.gnu.org/gnuastro/gnuastro-$VERSION.tar.gz \
+    -O - | tar -xz
+    cd /io/gnuastro*
+    # Not added --disable-shared since its giving errors in 
+    # CentOS. Check out bug#62904.
+    ./configure
+    make -j$(nproc) -s
+    make check -j$(nproc)
+    make install
+}
+
+
+
+
+
+# Downloads, builds and installs cfitsio.
+function setup_cfitsio(){
+    cd /io
+    wget -c http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio_latest.tar.gz \
+    -O - | tar -xz
+    cd cfitsio*
+    # Build instructions taken from:
+    # https://www.gnu.org/software/gnuastro/manual/html_node/CFITSIO.html
+    ./configure --prefix=/usr/local --enable-sse2 --enable-reentrant
+    make -j$(nproc) -s
+    # Skipping these steps, since fpack and funpack
+    # are not requirements for building Gnuastro library.
+    # make utils
+    # export LD_LIBRARY_PATH="$(pwd):$LD_LIBRARY_PATH"
+    # ./testprog > testprog.lis
+    # diff testprog.lis testprog.out
+    # cmp testprog.fit testprog.std
+    make install
+}
+
+
+
+
+
+# Downloads, builds and installs wcslib.
+function setup_wcslib(){
+    wget -c http://www.atnf.csiro.au/people/mcalabre/WCS/wcslib-7.11.tar.bz2
+    tar xf wcs*
+    cd wcs*
+    # Build instructions taken from:
+    # https://www.gnu.org/software/gnuastro/manual/html_node/WCSLIB.html
+    ./configure LIBS="-pthread -lm" --without-pgplot     \
+              --disable-fortran
+    make -j$(nproc)
+    make check -j$(nproc)
+    make install
+}
+
+
+
+
+
+# function prepare_system_debian(){
+#     apt-get update -y
+#     # Install the system packages required by our library
+#     # topcat is not installed since its not available in Debian 9.
+#     apt-get install ghostscript libtool-bin libjpeg-dev wget   \
+#                     libtiff5-dev libgit2-dev curl lzip wget saods9 \
+#                     libgsl-dev libcfitsio-dev wcslib-dev -y
+#     echo "Python versions found: $(cd /opt/python && echo cp* \
+#           | sed -e 's|[^ ]*-||g')"
+#     setup_gnuastro
+# }
+
+
+
+
+
+# For manylinux2014_x86_64
+function prepare_system(){
+    # Make sure cache is fully updates with the metadata.
+    yum makecache
+    # Install as many dependencies as possible using the
+    # package manager. Taken from 
+    # https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/Dependencies-from-package-managers.html#index-RHEL
+    # ds9 and topcat are not available in CentOS7. Also they are
+    # not required for building the library, so can be skipped.
+    yum install ghostscript libtool libjpeg-devel     \
+                libtiff-devel libgit2-devel lzip curl \
+                gsl-devel wget -y
+    # Update all packages installed.
+    yum update -y
+    # "/usr/local/lib" is not added to LD_LIBRARY_PATH by
+    # default, so adding it here and performing ldconfig to
+    # avoid any linking errors later on when building gnuastro.
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+    ldconfig
+
+    setup_wcslib
+    # Only for manylinux2014_x86_64, since
+    # libcfitsio-dev is not avaialble in CentOS through yum.
+    setup_cfitsio
+    echo "Python versions found: $(cd /opt/python && echo cp* \
+          | sed -e 's|[^ ]*-||g')"
+    setup_gnuastro
+}
+
+
+
+
+
+# Builds the .whl files for every CPython version using bdist_wheel.
+function build_wheels(){
+    cd /io/
+    for PYBIN in /opt/python/cp*/bin; do
+        "${PYBIN}/pip3" install -r /io/dev-requirements.txt
+        "${PYBIN}/python3" /io/setup.py bdist_wheel -d wheelhouse/
+    done
+}
+
+
+
+
+
+# Bundle external shared libraries into the wheels
+function repair_wheels(){
+    for whl in /io/wheelhouse/*.whl; do
+        # Shows external shared libraries that the wheel depends upon.
+        if ! auditwheel show "$whl"; then
+            echo "Skipping non-platform wheel $whl"
+        else
+            # Copies the external shared libraries into the wheel itself
+            # and automatically modifies the appropriate RPATH entries
+            # such that these libraries will be picked up at runtime.
+            auditwheel repair "$whl" --plat "$PLAT" -w /io/wheelhouse/
+        fi
+    done
+}
+
+
+
+
+
+function run_tests(){
+    # Install packages and test
+    cd /io/
+    for PYBIN in /opt/python/cp*/bin/; do
+        "${PYBIN}/pip3" install pygnuastro --no-index -f /io/wheelhouse || exit 1
+        "${PYBIN}/tox"
+    done
+}
+
+
+
+
+
+function show_wheels(){
+    ls -l /io/wheelhouse/*.whl
+}
+
+
+
+
+
+function clean_system(){
+    rm -rf "gnuastro-$VERSION/" wcslib* cfitsio* build/ pygnuastro.egg-info/
+    find /io/wheelhouse/ -type f \! -name "*manylinux*" | xargs rm -f
+}
+
+
+
+
+
+prepare_system
+build_wheels
+repair_wheels
+run_tests
+show_wheels
+clean_system
