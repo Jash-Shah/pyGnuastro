@@ -62,8 +62,8 @@ function setup_wcslib(){
     # Build instructions taken from:
     # https://www.gnu.org/software/gnuastro/manual/html_node/WCSLIB.html
     ./configure LIBS="-pthread -lm" --without-pgplot     \
-              --disable-fortran
-    make -j$(nproc)
+              --disable-fortran --enable-shared
+    make -j$(nproc) -s
     make check -j$(nproc)
     make install
 }
@@ -90,8 +90,6 @@ function setup_wcslib(){
 
 # For manylinux2014_x86_64
 function prepare_system(){
-    # Make sure cache is fully updates with the metadata.
-    yum makecache
     # Install as many dependencies as possible using the
     # package manager. Taken from 
     # https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/Dependencies-from-package-managers.html#index-RHEL
@@ -153,12 +151,12 @@ function repair_wheels(){
 
 
 
+# Install packages and test
 function run_tests(){
-    # Install packages and test
     cd /io/
-    for PYBIN in /opt/python/cp*/bin/; do
+    for PYBIN in /opt/python/cp*/bin; do
         "${PYBIN}/pip3" install pygnuastro --no-index -f /io/wheelhouse || exit 1
-        "${PYBIN}/tox"
+        "${PYBIN}/python3" -m pytest || exit 1
     done
 }
 
@@ -175,7 +173,10 @@ function show_wheels(){
 
 
 function clean_system(){
-    rm -rf "gnuastro-$VERSION/" wcslib* cfitsio* build/ pygnuastro.egg-info/
+    cd /io
+    # Remove any libraries installed
+    rm -rf build/ pygnuastro.egg-info/
+    # Remove platform specific wheels
     rm -fv wheelhouse/*-linux_*.whl
 }
 
@@ -183,9 +184,9 @@ function clean_system(){
 
 
 
-prepare_system
+# prepare_system
 build_wheels
 repair_wheels
 run_tests
-show_wheels
 clean_system
+show_wheels
