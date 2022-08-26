@@ -26,6 +26,13 @@ jobs:
         brew install ghostscript libtool libjpeg libtiff libgit2 curl lzip saoimageds9 topcat gsl cfitsio
         brew tap brewsci/science
         brew install wcslib
+        wget -c http://ftpmirror.gnu.org/gnuastro/gnuastro-0.18.tar.gz -O - | tar -xz
+        cd gnuastro*
+        ./configure
+        make -s
+        make check
+        make install
+        cd ..
         python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
         python -m pip install --upgrade --disable-pip-version-check delocate
     - name: Build wheels
