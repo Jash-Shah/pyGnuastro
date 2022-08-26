@@ -1,7 +1,41 @@
-name: pygnuastro
+name: Build ManyLinux Wheels and SDist
 on: [push]
 
 jobs:
+  manylinux-wheels:
+    runs-on: ubuntu-latest
+    container: jashshah1401/pygnuastro:0.18-manylinux2014_x86_64
+    steps:
+      - name: Run in Container
+        run: |
+
+  sdist:
+    name: Build source distribution (sdist)
+    runs-on: [ubuntu-latest]
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y gnuastro
+        python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
+    - name: Build sdist
+      run: |
+        python setup.py --verbose build
+        python setup.py --verbose sdist
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Source distribution
+        path: dist/
   macos_wheels:
     name: Build MacOS wheels
     # Note: the container MacOS version may differ from the SDK
@@ -21,18 +55,14 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install MacPorts
+      run: |
+        wget https://github.com/macports/macports-base/releases/download/v2.7.2/MacPorts-2.7.2-12-Monterey.pkg
+        sudo installer -pkg ./MacPorts-2.7.2-12-Monterey.pkg -target /
+        sudo port selfupdate
     - name: Install dependencies
       run: |
-        brew install ghostscript libtool libjpeg libtiff libgit2 curl lzip saoimageds9 topcat gsl cfitsio
-        brew tap brewsci/science
-        brew install wcslib
-        wget -c http://ftpmirror.gnu.org/gnuastro/gnuastro-0.18.tar.gz -O - | tar -xz
-        cd gnuastro*
-        ./configure
-        make -s
-        make check
-        make install
-        cd ..
+        sudo port install gnuastro
         python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
         python -m pip install --upgrade --disable-pip-version-check delocate
     - name: Build wheels
@@ -46,30 +76,3 @@ jobs:
       with:
         name: MacOS cp${{ matrix.python-version }} wheel
         path: wheelhouse/
-  sdist:
-    name: Build source distribution (sdist)
-    runs-on: [ubuntu-latest]
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.7]
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y ghostscript libtool-bin libjpeg-dev libtiff-dev libgit2-dev curl lzip saods9 topcat libgsl-dev libcfitsio-dev wcslib-dev
-        python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
-    - name: Build sdist
-      run: |
-        python setup.py --verbose build
-        python setup.py --verbose sdist
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: Source distribution
-        path: dist/
