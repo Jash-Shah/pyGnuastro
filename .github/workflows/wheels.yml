@@ -4,10 +4,26 @@ on: [push]
 jobs:
   manylinux-wheels:
     runs-on: ubuntu-latest
-    container: jashshah1401/pygnuastro:0.18-manylinux2014_x86_64
+    container: 
+      image: jashshah1401/pygnuastro:0.18-manylinux2014_x86_64
+      env:
+        PLAT: manylinux2014_x86_64
+      volumes:
+        - ${{ github.workspace }}:/io
+
     steps:
-      - name: Run in Container
+      - uses: actions/checkout@v3
+      - name: Run Build Wheels Script in Container
         run: |
+          cd /io
+          chmod +x ./travis/build-wheels.sh
+          ./travis/build-wheels.sh
+        shell: bash
+      - name: Upload ManyLinux Wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: ManyLinux wheel
+          path: /io/wheelhouse/
 
   sdist:
     name: Build source distribution (sdist)
@@ -17,25 +33,28 @@ jobs:
       matrix:
         python-version: [3.6]
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y gnuastro
-        python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
-    - name: Build sdist
-      run: |
-        python setup.py --verbose build
-        python setup.py --verbose sdist
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: Source distribution
-        path: dist/
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gnuastro
+          dpkg -l | grep gnuastro
+          sudo ldconfig
+          python3 -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
+      - name: Build sdist
+        run: |
+          python3 setup.py --verbose build_ext
+          python3 setup.py --verbose sdist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Source distribution
+          path: dist/
+
   macos_wheels:
     name: Build MacOS wheels
     # Note: the container MacOS version may differ from the SDK
@@ -48,7 +67,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, 3.10, 3.11]
+        python-version: [3.7, 3.8]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -57,11 +76,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install MacPorts
       run: |
-        wget https://github.com/macports/macports-base/releases/download/v2.7.2/MacPorts-2.7.2-12-Monterey.pkg
-        sudo installer -pkg ./MacPorts-2.7.2-12-Monterey.pkg -target /
-        sudo port selfupdate
+        wget https://github.com/macports/macports-base/releases/download/v2.7.2/MacPorts-2.7.2-11-BigSur.pkg
+        sudo installer -pkg ./MacPorts-2.7.2-11-BigSur.pkg -target /
     - name: Install dependencies
       run: |
+        pkgutil --pkgs
+        sudo port selfupdate
         sudo port install gnuastro
         python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
         python -m pip install --upgrade --disable-pip-version-check delocate
