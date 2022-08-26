@@ -2,4 +2,5 @@ numpy
 tox
 twine
 setuptools
+auditwheel
 pytest

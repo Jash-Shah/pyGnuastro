@@ -1,0 +1,68 @@
+name: pygnuastro
+on: [push]
+
+jobs:
+  macos_wheels:
+    name: Build MacOS wheels
+    # Note: the container MacOS version may differ from the SDK
+    # used to build Python there.  It is the latter that determines
+    # the wheel's platform tag.
+    # https://github.com/actions/virtual-environments/tree/master/images/macos
+    # https://github.com/MacPython/wiki/wiki/Spinning-wheels
+    # https://github.com/actions/virtual-environments/issues/696
+    runs-on: macos-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9, 3.10, 3.11]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        brew install ghostscript libtool libjpeg libtiff libgit2 curl lzip saoimageds9 topcat gsl cfitsio
+        brew tap brewsci/science
+        brew install wcslib
+        python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
+        python -m pip install --upgrade --disable-pip-version-check delocate
+    - name: Build wheels
+      run: |
+        python setup.py --quiet bdist_wheel -d wheels/
+    - name: Repair wheels
+      run: |
+        delocate-listdeps --all ./wheels/*.whl
+        delocate-wheel -w wheelhouse -v ./wheels/*.whl
+    - uses: actions/upload-artifact@v3
+      with:
+        name: MacOS cp${{ matrix.python-version }} wheel
+        path: wheelhouse/
+  sdist:
+    name: Build source distribution (sdist)
+    runs-on: [ubuntu-latest]
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ghostscript libtool-bin libjpeg-dev libtiff-dev libgit2-dev curl lzip saods9 topcat libgsl-dev libcfitsio-dev wcslib-dev
+        python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
+    - name: Build sdist
+      run: |
+        python setup.py --verbose build
+        python setup.py --verbose sdist
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Source distribution
+        path: dist/

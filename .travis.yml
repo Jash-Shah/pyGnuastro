@@ -1,10 +1,11 @@
 notifications:
   email: false
 
+language: python
+
 matrix:
   include:
-    - sudo: required
-      services:
+    - services:
         - docker
       env: DOCKER_IMAGE=jashshah1401/pygnuastro:0.18-manylinux2014_x86_64
            PLAT=manylinux2014_x86_64
