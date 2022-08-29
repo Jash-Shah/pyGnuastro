@@ -10,7 +10,6 @@ jobs:
         PLAT: manylinux2014_x86_64
       volumes:
         - ${{ github.workspace }}:/io
-
     steps:
       - uses: actions/checkout@v3
       - name: Run Build Wheels Script in Container
@@ -22,8 +21,8 @@ jobs:
       - name: Upload ManyLinux Wheels
         uses: actions/upload-artifact@v3
         with:
-          name: ManyLinux wheel
-          path: /io/wheelhouse/
+          name: Python 3.6-3.11 wheels
+          path: /io/wheelhouse/*${{ env.PLAT }}*.whl
 
   sdist:
     name: Build source distribution (sdist)
@@ -31,7 +30,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6]
+        python-version: [3.8]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -41,8 +40,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y gnuastro
-          dpkg -l | grep gnuastro
+          sudo apt-get install -y libgnuastro-dev
+          find /usr -name *gnuastro*
+          # echo $PATH $LD_LIBRARY_PATH
+          # ls -a /usr/local/lib
+          # ls -a /usr/include
+          # ls -a /usr/local/include
           sudo ldconfig
           python3 -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
       - name: Build sdist
@@ -67,22 +70,30 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.8]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install MacPorts
-      run: |
-        wget https://github.com/macports/macports-base/releases/download/v2.7.2/MacPorts-2.7.2-11-BigSur.pkg
-        sudo installer -pkg ./MacPorts-2.7.2-11-BigSur.pkg -target /
+    # - name: Install MacPorts
+    #   run: |
+    #     tag=$(basename $GITHUB_REF)
+    #     version=$(echo $tag | colrm 1 1)
+    #     echo VERSION=$version
+    #     wget https://github.com/macports/macports-base/releases/download/v2.7.2/MacPorts-2.7.2-11-BigSur.pkg
+    #     sudo installer -pkg ./MacPorts-2.7.2-11-BigSur.pkg -target /
+    #     echo "/opt/local/bin PATHS:"
+    #     ls -a /opt/local/bin
+    #     sudo echo "/opt/local/bin" >> /etc/paths
+    #     sudo echo "/opt/local/sbin" >> /etc/paths
+    #     sudo echo "export PATH=/opt/local/bin:$PATH" >> ~/.bash_profile
+    #     exec bash -l
+    #     source ~/.bash_profile
     - name: Install dependencies
       run: |
-        pkgutil --pkgs
-        sudo port selfupdate
-        sudo port install gnuastro
+        conda install -c conda-forge gnuastro
         python -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
         python -m pip install --upgrade --disable-pip-version-check delocate
     - name: Build wheels
