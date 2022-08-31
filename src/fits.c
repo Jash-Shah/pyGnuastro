@@ -4,8 +4,8 @@
 
 #include <Python.h>
 
-#include "gnuastro/fits.h"
-#include "gnuastro/python.h"
+#include <gnuastro/fits.h>
+#include <gnuastro/python.h>
 
 #include <numpy/arrayobject.h>
 
@@ -28,10 +28,12 @@
 
 
 
+// Functions
+// =========
 static PyObject *
 img_read(PyObject *self, PyObject *args, PyObject *keywds)
 {
-  char *fname, *hdu;
+  char *filename, *hdu;
   PyObject *out = NULL;
   gal_data_t *image = NULL;
   // Default values of minmapsize and quietmap
@@ -39,23 +41,29 @@ img_read(PyObject *self, PyObject *args, PyObject *keywds)
 
   /* The names of the arguments as a static array.
   So that they can be accessed as keyword arguments in Python. */
-  static char *kwlist[] = {"filename", "hdu", "minmapsize",
-                           "quietmap", NULL};
+  static char*
+  kwlist[] = {"filename", "hdu", "minmapsize",
+               "quietmap", NULL};
 
-  // Parsing the arguments
+  /* "ss|ii" indicates that only the first two arguments
+      i.e filename and hdu are required, rest are optional. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "ss|ii", kwlist,
-                                   &fname, &hdu, &minmapsize, &quietmap))
+                                   &filename, &hdu,
+                                   &minmapsize, &quietmap))
+    /* The arguments passed don't correspond to the format
+       described */                                   
     return NULL;
 
-  // Reading the image
-  image = gal_fits_img_read(fname, hdu, minmapsize, quietmap);
+  /* Reading the image */
+  image = gal_fits_img_read(filename, hdu, minmapsize, quietmap);
 
-  // Since dims needs to be a pointer to a const.
+  /* Since dims needs to be a pointer to a const. */
   npy_intp* const dims = (npy_intp *)image->dsize;
 
   out = PyArray_SimpleNewFromData(image->ndim, dims,
-                                  gal_npy_datatype_to_type(image->type),
+                                  gal_python_type_to_numpy(image->type),
                                   (float *)image->array);
+  
 
   return out;
 }
@@ -65,24 +73,30 @@ img_read(PyObject *self, PyObject *args, PyObject *keywds)
 
 
 static PyObject *
-img_write(PyObject *self, PyObject *args)
+img_write(PyObject *self, PyObject *args, PyObject *keywds)
 {
-  gal_data_t *data;
+  gal_data_t *data = NULL;
+  PyObject *img_data = NULL;
   PyArrayObject *data_arr = NULL;
   char *filename, *program_string;
-  gal_fits_list_key_t *headers = NULL;
-  PyObject *arg1 = NULL, *header_list=NULL;
+  /* Default value for program_string */
   program_string = "FITS Program";
 
-  if(!PyArg_ParseTuple(args,"Os|Os",&arg1, &filename, 
-                       &header_list, &program_string))
+  static char *
+  kwlist[] = {"data", "filename", "program_string"};
+
+  if(!PyArg_ParseTupleAndKeywords(args, keywds, "Os|s", kwlist,
+                                  &img_data, &filename, &program_string))
     return NULL;
   // printf("Arguments parsed\n");
 
-  data_arr = (PyArrayObject *)PyArray_FROM_OT(arg1, NPY_FLOAT32);
+  /* Converting the received Python array data to NumPy array. */
+  data_arr = (PyArrayObject *)PyArray_FROM_OT(img_data, NPY_FLOAT32);
   // printf("Numpy Data Array initialized\n");
 
-  data = gal_data_alloc(PyArray_DATA(data_arr), gal_npy_type_to_datatype(PyArray_TYPE(data_arr)),
+  /* Using the metadata obtained from the NumPy array to allocate a gal_data_t 
+     structure which will be used for writing to the output image. */
+  data = gal_data_alloc(PyArray_DATA(data_arr), gal_python_type_from_numpy(PyArray_TYPE(data_arr)),
                         PyArray_NDIM(data_arr), (size_t *)PyArray_DIMS(data_arr),
                         NULL, 0, -1, 1, NULL, NULL, NULL);
   // printf("gal_data_alloc succedded\n");
@@ -93,6 +107,7 @@ img_write(PyObject *self, PyObject *args)
 
   gal_data_free(data);
 
+  /* Returns acknowledgement if write was successful. */
   return Py_True;
 
 }
@@ -106,13 +121,13 @@ FitsMethods[] = {
                   {
                     "img_read",
                     (PyCFunction)(void (*)(void))img_read,
-                    METH_VARARGS,
+                    METH_VARARGS | METH_KEYWORDS,
                     "Reads an image."
                   },
                   {
                     "img_write",
                     (PyCFunction)(void (*)(void))img_write,
-                    METH_VARARGS,
+                    METH_VARARGS | METH_KEYWORDS,
                     "Writes an image."
                   },
     {NULL, NULL, 0, NULL}, /* Sentinel */

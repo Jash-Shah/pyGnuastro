@@ -47,8 +47,8 @@ age(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+   i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))

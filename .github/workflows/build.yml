@@ -1,0 +1,85 @@
+name: Build and Upload Wheels and SDist
+on: push
+
+jobs:
+  # Builds, tests and uploads ManyLinux2014_x86_64 wheels
+  manylinux-wheels:
+    runs-on: ubuntu-latest
+    container: 
+      image: jashshah1401/pygnuastro:0.18-manylinux2014_x86_64
+      env:
+        PLAT: manylinux2014_x86_64
+      volumes:
+        - ${{ github.workspace }}:/io
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Build Wheels Script in Container
+        run: |
+          cd /io
+          chmod +x ./travis/build-wheels.sh
+          ./travis/build-wheels.sh
+        shell: bash
+      - name: Upload ManyLinux Wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: Python 3.6-3.11 wheels
+          path: /io/wheelhouse/*${{ env.PLAT }}*.whl
+  # Builds Source Distribution
+  sdist:
+      runs-on: [ubuntu-latest]
+      strategy:
+        max-parallel: 4
+        matrix:
+          python-version: [3.8]
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set up Python ${{ matrix.python-version }}
+          uses: actions/setup-python@v4
+          with:
+            python-version: ${{ matrix.python-version }}
+        - name: Install dependencies
+          run: |
+            sudo apt-get update -y
+            sudo apt-get install -y libgnuastro-dev
+            python3 -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
+        - name: Build sdist
+          run: |
+            python3 setup.py --verbose build_ext
+            python3 setup.py --verbose sdist
+        - name: Upload artifact
+          uses: actions/upload-artifact@v3
+          with:
+            name: Source distribution
+            path: dist/
+# Builds wheels for MacOS
+  macos-wheels:
+    runs-on: ${{ matrix.macos-version }}
+    strategy:
+      max-parallel: 4
+      matrix:
+        macos-version: [macos-12, macos-11]
+        python-version: [3.8, 3.9]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }} 
+    - name: Install dependencies
+      run: |
+        conda install -c conda-forge gnuastro -y
+        python3 -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
+        python3 -m pip install --upgrade --disable-pip-version-check delocate
+    - name: Build wheels
+      run: |
+        # Since we are linking with the conda installed gnuastro library we need to supply appropriate linking flags
+        python3 setup.py build_ext -I$(conda info --base)/include -L$(conda info --base)/lib --rpath=$(conda info --base)/lib
+        python3 setup.py --quiet bdist_wheel -d wheels/ \
+    - name: Repair wheels
+      run: |
+        delocate-listdeps --all ./wheels/*.whl
+        delocate-wheel -w wheelhouse -v ./wheels/*.whl
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.macos-version }} cp${{ matrix.python-version }} wheel
+        path: wheelhouse/
