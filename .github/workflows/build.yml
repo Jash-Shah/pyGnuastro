@@ -6,7 +6,7 @@ jobs:
   manylinux-wheels:
     runs-on: ubuntu-latest
     container: 
-      image: jashshah1401/pygnuastro:0.18-manylinux2014_x86_64
+      image: jashshah1401/pygnuastro:gal-0.18.39-eae75-manylinux2014_x86_64
       env:
         PLAT: manylinux2014_x86_64
       volumes:

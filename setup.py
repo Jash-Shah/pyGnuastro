@@ -14,7 +14,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 
 # Description of the Gnuastro Python package.
-with open(here+"/README.md") as readme:
+with open(here+"/README.rst") as readme:
   long_descp = readme.read()
 
 
@@ -61,9 +61,9 @@ cosmology = Extension(name='cosmology',
 
 
 
-# fits = Extension(name='fits',
-#                  sources=[f'{src_dir}/fits.c'],
-#                  **default_ext_args)
+fits = Extension(name='fits',
+                 sources=[f'{src_dir}/fits.c'],
+                 **default_ext_args)
 
 
 
@@ -73,15 +73,67 @@ cosmology = Extension(name='cosmology',
 # =====
 # This is the main funciton which builds the module.
 # It uses the metadata passed as arguments to describe the Python Package
-setup(name="pygnuastro",
-      version=f'0.18',
+setup(
+      # Name of the package as it appears on PyPI
+      name="pygnuastro",
+      version=f'0.0.1',
+      #
+      # Longer description of your project that represents
+      # the body of text which users will see when they visit PyPI.
       long_description=long_descp,
-      long_description_content_type="text/markdown",
-      author="Mohammad Akhlaghi",
-      author_email="mohammad@akhlaghi.org",
+      long_description_content_type="text/x-rst",
+      #
+      # Author Details
+      author="Jash Shah",
+      author_email="jash28582@gmail.com",
+      #
+      # Project Home-Page url
       url="http://www.gnu.org/software/gnuastro/manual/",
       project_urls={
         "Manual": "http://www.gnu.org/software/gnuastro/manual/",
         "Bug Tracker": "https://savannah.gnu.org/bugs/?group=gnuastro",},
-      ext_package="pygnuastro", # This will be used as base package name.
-      ext_modules=[cosmology])
+      #
+      # Classifiers to help users find the project by categorizing it.
+      classifiers=[
+        # Maturity of Project(1 to 6)
+        "Development Status :: 1 - Planning",
+        #
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Astronomy",
+        "Topic :: Scientific/Engineering :: Physics",
+        # License Type
+        "License :: OSI Approved :: GNU License",
+        # Specifing the Python versions supported. These classifiers are
+        # *not* checked by 'pip install'. See instead 'python_requires'.
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10"],
+      #
+      # This field adds keywords for your project which will appear on the
+      # project page.
+      keywords="astronomy, astrophysics, cosmology, space, science, \
+                units, table, wcs, coordinate, fits, fitting",
+      #
+      # 'pip install' will check this and refuse to
+      # install the project if the version does not match.
+      python_requires=">=3.6, <4",
+      #
+      # Other packages that the project depends on to run
+      install_requires=["numpy"],
+      #
+      # Additional groups of dependencies, which are not installed
+      # by default, but users can install by giving appropriate arguments.
+      #
+      setup_requires=["numpy"],
+      #
+      extras_require={
+        "dev": ["tox", "twine", "auditwheel", "pytest"],
+        "test": ["tox", "pytest"],
+      },
+      #
+      # This will be used as the base package name.
+      ext_package="pygnuastro",
+      ext_modules=[cosmology, fits])

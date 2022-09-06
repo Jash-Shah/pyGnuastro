@@ -36,7 +36,7 @@ img_read(PyObject *self, PyObject *args, PyObject *keywds)
   char *filename, *hdu;
   PyObject *out = NULL;
   gal_data_t *image = NULL;
-  // Default values of minmapsize and quietmap
+  /* Default values of minmapsize and quietmap */
   int minmapsize = -1, quietmap = 1;
 
   /* The names of the arguments as a static array.
@@ -101,7 +101,7 @@ img_write(PyObject *self, PyObject *args, PyObject *keywds)
                         NULL, 0, -1, 1, NULL, NULL, NULL);
   // printf("gal_data_alloc succedded\n");
 
-  gal_fits_img_write(data, filename, headers, program_string);
+  gal_fits_img_write(data, filename, NULL, program_string);
 
   // printf("%s created!\n",filename);
 

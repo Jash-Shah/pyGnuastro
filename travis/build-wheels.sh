@@ -1,11 +1,21 @@
 #!/bin/bash
 
+##########################################################################
+# 1. Sets up Gnuastro and its dependencies on the system.
+# 2. Build the wheel of the Python package.
+# 3. Run Auditwheel to include the external dependecies in the wheel.
+# 4. Use Pytest to run tests on the built wheels.
+# 5. Cleans the artifacts generated during building.
+##########################################################################
+
+
+
 # Called inside the manylinux image
 echo "Started $0 $@"
 
 set -e -u -x
-VERSION=0.18
-
+# The version of Gnuastro that is linked to the current version of PyGnuastro.
+GAL_VERSION=latest
 
 
 
@@ -14,7 +24,7 @@ VERSION=0.18
 function setup_gnuastro(){
     cd /io
     # Make the version of Python same as version of Gnuastro.
-    wget -c http://ftpmirror.gnu.org/gnuastro/gnuastro-$VERSION.tar.gz \
+    wget -c http://ftpmirror.gnu.org/gnuastro/gnuastro-$GAL_VERSION.tar.gz \
     -O - | tar -xz 
     cd gnuastro*
     # Not added --disable-shared since its giving errors in 
@@ -72,6 +82,7 @@ function setup_wcslib(){
 
 
 
+# This is to setup Gnuastro on a Debian based system.
 # function prepare_system_debian(){
 #     apt-get update -y
 #     # Install the system packages required by our library
@@ -88,8 +99,8 @@ function setup_wcslib(){
 
 
 
-# For manylinux2014_x86_64
-function prepare_system(){
+# For CentOS based systems.
+function prepare_system_centos(){
     # Install as many dependencies as possible using the
     # package manager. Taken from 
     # https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/Dependencies-from-package-managers.html#index-RHEL
@@ -122,8 +133,11 @@ function prepare_system(){
 # Builds the .whl files for every CPython version using bdist_wheel.
 function build_wheels(){
     cd /io/
-    for PYBIN in /opt/python/cp*/bin; do
+    # When building wheels for the maneage docker image
+    ildir="$HOME/build/software/installed"
+    for PYBIN in /opt/python/cp*/bin;   do
         "${PYBIN}/pip3" install -r /io/dev-requirements.txt
+        "${PYBIN}/python3" /io/setup.py build_ext -I$ildir/include -L$ildir/lib --rpath=$ildir/lib
         "${PYBIN}/python3" /io/setup.py bdist_wheel -d wheelhouse/
     done
 }
@@ -184,7 +198,7 @@ function clean_system(){
 
 
 
-# prepare_system
+# prepare_system_centos
 build_wheels
 repair_wheels
 run_tests
