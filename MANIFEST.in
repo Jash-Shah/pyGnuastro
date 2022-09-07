@@ -5,3 +5,8 @@ recursive-include test *.py
 
 include requirements.txt
 include dev-requirements.txt
+
+prune build
+prune dist
+
+global-exclude *.o

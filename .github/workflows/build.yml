@@ -1,5 +1,10 @@
 name: Build and Upload Wheels and SDist
-on: push
+on:
+  push:
+    tags:
+      - run-workflow
+
+
 
 jobs:
   # Builds, tests and uploads ManyLinux2014_x86_64 wheels

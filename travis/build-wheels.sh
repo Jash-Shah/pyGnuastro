@@ -170,7 +170,7 @@ function run_tests(){
     cd /io/
     for PYBIN in /opt/python/cp*/bin; do
         "${PYBIN}/pip3" install pygnuastro --no-index -f /io/wheelhouse || exit 1
-        "${PYBIN}/python3" -m pytest || exit 1
+        "${PYBIN}/python3" -m pytest
     done
 }
 

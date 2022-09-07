@@ -7,7 +7,7 @@ PyGnuastro
 PyGnuastro is a free software which offer a wide array of functions
 for astronomical data manipulation and analysis. It is the Python 
 implementation of `Gnuastro Utilities
-<https://www.gnu.org/savannah-checkouts/gnu/gnuastro/gnuastro.html>`_` 
+<https://www.gnu.org/savannah-checkouts/gnu/gnuastro/gnuastro.html>`_
 and aims to offer all the functionality of Gnuastro
 but with a higher level of abstracion. It also uses NumPy for all its data
 array operations.
@@ -23,13 +23,13 @@ Reason for a Gnuastro Python Package
 While `Gnuastro's Library
 <https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/Gnuastro-library.html>`_
 and its `Binary programs 
-<https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/General-program-usage-tutorial.html>_``
+<https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/General-program-usage-tutorial.html>`_
 provides extensive and fine-tuned functionality,
 it's tough to deny the versitality and ease of usage that a language like
 Python brings. Being dynamically typed and high-level makes
 it simple for novice programmers to interact with Gnuastro's programs.
 Additionally, since many of Gnuastro's use cases require working with data
-arrays, integrating libraries like `NumPy<https://numpy.org/doc/stable/index.html>_``
+arrays, integrating libraries like `NumPy <https://numpy.org/doc/stable/index.html>`_
 makes data analysis and manipulation more accessible.
 
 Contributing Code, Documentation, or Feedback
@@ -40,7 +40,7 @@ License
 -------
 
 PyGnuastro is licensed under the <ADD LICENSE NAME> license - see the
-`LICENSE.rst <LICENSE.rst>`_ file.
+`LICENSE <LICENSE>`_ file.
 
 .. |Actions Status| image:: https://github.com/Jash-Shah/PyGnuastro/actions/workflows/build.yml/badge.svg
     :target: https://github.com/Jash-Shah/PyGnuastro/actions

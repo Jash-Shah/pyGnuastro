@@ -1,4 +1,5 @@
 import os
+import platform
 from numpy import get_include
 from setuptools import setup, Extension
 
@@ -19,17 +20,13 @@ with open(here+"/README.rst") as readme:
 
 
 
-# Get the paths to where the gnuastro library(libgnuastro),
-# the source files(.h) and the extension modules(.c)
-# are from environment variables defined in the Makefile.
-
 
 
 
 
 # Path to the source files for the extension
 # modules where the wrapper functions and NumPy
-# converters are written. These will be in the source tree.
+# converters are written.
 src_dir = "src"
 
 # For Debugging:
@@ -67,6 +64,13 @@ fits = Extension(name='fits',
 
 
 
+# Since, the Gnuastro version used for building the MacOS wheels doesn't
+# have the Python Interface functions yet, we avoid building any extension
+# modules that depend on those functions.
+ext_modules = [cosmology]
+if platform.system() != "Darwin":
+  ext_modules.append(fits)
+
 
 
 # Setup
@@ -91,7 +95,7 @@ setup(
       url="http://www.gnu.org/software/gnuastro/manual/",
       project_urls={
         "Manual": "http://www.gnu.org/software/gnuastro/manual/",
-        "Bug Tracker": "https://savannah.gnu.org/bugs/?group=gnuastro",},
+        "Issues": "https://github.com/Jash-Shah/PyGnuastro/issues",},
       #
       # Classifiers to help users find the project by categorizing it.
       classifiers=[
@@ -136,4 +140,4 @@ setup(
       #
       # This will be used as the base package name.
       ext_package="pygnuastro",
-      ext_modules=[cosmology, fits])
+      ext_modules=ext_modules)
