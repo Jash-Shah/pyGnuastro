@@ -1,12 +1,14 @@
+include tox.ini
 include README.rst
-
-recursive-include src *.c
-recursive-include test *.py
-
+include LICENSE.rst
 include requirements.txt
 include dev-requirements.txt
+include pyproject.toml
+
+recursive-include src *.c *.h
+recursive-include test *.py
 
 prune build
 prune dist
 
-global-exclude *.o
+global-exclude *.o *.so

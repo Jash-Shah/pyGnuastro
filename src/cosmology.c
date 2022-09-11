@@ -75,8 +75,8 @@ angular_distance(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+     i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))
@@ -103,8 +103,8 @@ comoving_volume(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+     i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))
@@ -131,8 +131,8 @@ critical_density(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+     i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))
@@ -159,8 +159,8 @@ distance_modulus(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+     i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))
@@ -188,8 +188,8 @@ luminosity_distance(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+     i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))
@@ -216,8 +216,8 @@ proper_distance(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+     i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))
@@ -244,8 +244,8 @@ to_absolute_mag(PyObject *self, PyObject *args, PyObject *keywds)
   double o_matter_0 = OMATTER_DEFAULT;
   double o_radiation_0 = ORADIATION_DEFAULT;
 
-  // "d|ddd" indicates that only the first argument
-  // i.e z is the required, and rest are optional args.
+  /* "d|ddd" indicates that only the first argument
+      i.e z is the required, and rest are optional args. */
   if (!PyArg_ParseTupleAndKeywords(args, keywds, "d|dddd", kwlist,
                                    &z, &H0, &o_lambda_0, &o_matter_0,
                                    &o_radiation_0))
@@ -268,6 +268,8 @@ velocity_from_z(PyObject *self, PyObject *args)
 {
   double z, vel;
 
+  /* Not providing keyword arguments, since this function
+     takes only one argument. */
   if (!PyArg_ParseTuple(args, "d", &z))
     return NULL;
 
@@ -285,6 +287,8 @@ z_from_velocity(PyObject *self, PyObject *args)
 {
   double z, vel;
 
+  /* Not providing keyword arguments, since this function
+     takes only one argument. */
   if (!PyArg_ParseTuple(args, "d", &vel))
     return NULL;
 
@@ -297,10 +301,25 @@ z_from_velocity(PyObject *self, PyObject *args)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Method Table
 // ============
-// Define all the methods, with their
-// name, function pointer, argument type and docstring.
+/* Define all the methods, with their
+   name, function pointer, argument type and docstring. */
 static PyMethodDef
 CosmologyMethods[] =
 {
@@ -384,6 +403,21 @@ CosmologyMethods[] =
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Module Definition and Initialization
 // ===================================
 static struct PyModuleDef
@@ -411,7 +445,7 @@ PyInit_cosmology(void)
   PyObject *module;
   module = PyModule_Create(&cosmology);
 
-  // Error handling
+  /* Error handling */
   if(module == NULL)
     return NULL;
 

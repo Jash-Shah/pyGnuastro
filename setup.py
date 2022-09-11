@@ -40,7 +40,7 @@ src_dir = "src"
 # These arguments will be common while initializing
 # all Extension modules. Hence, can be defined here only once.
 default_ext_args = dict(include_dirs=["/usr/include",
-                                      get_include()],
+                                      get_include(), "."],
                         libraries=["gnuastro"],
                         library_dirs=["/usr/local/lib"])
 
@@ -59,17 +59,11 @@ cosmology = Extension(name='cosmology',
 
 
 fits = Extension(name='fits',
-                 sources=[f'{src_dir}/fits.c'],
+                 sources=[f'{src_dir}/fits.c',
+                          f'{src_dir}/utils/utils.c'],
                  **default_ext_args)
 
 
-
-# Since, the Gnuastro version used for building the MacOS wheels doesn't
-# have the Python Interface functions yet, we avoid building any extension
-# modules that depend on those functions.
-ext_modules = [cosmology]
-if platform.system() != "Darwin":
-  ext_modules.append(fits)
 
 
 
@@ -106,7 +100,7 @@ setup(
         "Topic :: Scientific/Engineering :: Astronomy",
         "Topic :: Scientific/Engineering :: Physics",
         # License Type
-        "License :: OSI Approved :: GNU License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         # Specifing the Python versions supported. These classifiers are
         # *not* checked by 'pip install'. See instead 'python_requires'.
         "Programming Language :: Python :: 3",
@@ -140,4 +134,4 @@ setup(
       #
       # This will be used as the base package name.
       ext_package="pygnuastro",
-      ext_modules=ext_modules)
+      ext_modules=[cosmology, fits])

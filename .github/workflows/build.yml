@@ -1,8 +1,7 @@
 name: Build and Upload Wheels and SDist
-on:
-  push:
-    tags:
-      - run-workflow
+on: [push]
+
+
 
 
 
@@ -10,52 +9,65 @@ jobs:
   # Builds, tests and uploads ManyLinux2014_x86_64 wheels
   manylinux-wheels:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mount_point: [/io]
     container: 
-      image: jashshah1401/pygnuastro:gal-0.18.39-eae75-manylinux2014_x86_64
+      image: jashshah1401/pygnuastro:gal-0.18-manylinux2014_x86_64
       env:
         PLAT: manylinux2014_x86_64
       volumes:
-        - ${{ github.workspace }}:/io
+        - ${{ github.workspace }}:${{ matrix.mount_point }}
+      options: --user 0
     steps:
       - uses: actions/checkout@v3
       - name: Run Build Wheels Script in Container
         run: |
-          cd /io
-          chmod +x ./travis/build-wheels.sh
-          ./travis/build-wheels.sh
+          cd ${{ matrix.mount_point }}
+          chmod +x ./build-scripts/build-wheels.sh
+          ./build-scripts/build-wheels.sh
         shell: bash
+      - name: Build source dist
+        run: |
+          cd ${{ matrix.mount_point }}
+          python3.8 setup.py sdist
       - name: Upload ManyLinux Wheels
         uses: actions/upload-artifact@v3
         with:
           name: Python 3.6-3.11 wheels
-          path: /io/wheelhouse/*${{ env.PLAT }}*.whl
-  # Builds Source Distribution
-  sdist:
-      runs-on: [ubuntu-latest]
-      strategy:
-        max-parallel: 4
-        matrix:
-          python-version: [3.8]
-      steps:
-        - uses: actions/checkout@v3
-        - name: Set up Python ${{ matrix.python-version }}
-          uses: actions/setup-python@v4
-          with:
-            python-version: ${{ matrix.python-version }}
-        - name: Install dependencies
-          run: |
-            sudo apt-get update -y
-            sudo apt-get install -y libgnuastro-dev
-            python3 -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
-        - name: Build sdist
-          run: |
-            python3 setup.py --verbose build_ext
-            python3 setup.py --verbose sdist
-        - name: Upload artifact
-          uses: actions/upload-artifact@v3
-          with:
-            name: Source distribution
-            path: dist/
+          path: ${{ matrix.mount_point }}/wheelhouse/*${{ env.PLAT }}*.whl
+      - name: Upload Source Dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: Source Distribution
+          path: ${{ matrix.mount_point }}/dist/pygnuastro*.tar.gz
+  # # Builds Source Distribution
+  # sdist:
+  #     runs-on: [ubuntu-latest]
+  #     strategy:
+  #       max-parallel: 4
+  #       matrix:
+  #         python-version: [3.8]
+  #     steps:
+  #       - uses: actions/checkout@v3
+  #       - name: Set up Python ${{ matrix.python-version }}
+  #         uses: actions/setup-python@v4
+  #         with:
+  #           python-version: ${{ matrix.python-version }}
+  #       - name: Install dependencies
+  #         run: |
+  #           sudo apt-get update -y
+  #           sudo apt-get install -y libgnuastro-dev
+  #           python3 -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
+  #       - name: Build sdist
+  #         run: |
+  #           python3 setup.py --verbose build_ext
+  #           python3 setup.py --verbose sdist
+  #       - name: Upload artifact
+  #         uses: actions/upload-artifact@v3
+  #         with:
+  #           name: Source distribution
+  #           path: dist/
 # Builds wheels for MacOS
   macos-wheels:
     runs-on: ${{ matrix.macos-version }}
@@ -72,9 +84,15 @@ jobs:
         python-version: ${{ matrix.python-version }} 
     - name: Install dependencies
       run: |
-        conda install -c conda-forge gnuastro -y
+        conda install -c conda-forge gnuastro -y --quiet
         python3 -m pip install --upgrade --disable-pip-version-check -r dev-requirements.txt
         python3 -m pip install --upgrade --disable-pip-version-check delocate
+        # Issue on MacOS where it cant detect gcc headers on OSX >=10.9. Below is the workaround for it.
+        ls -R /Library/Developer/CommandLineTools/SDKs  
+        export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX..sdk
+        # sudo rm -rf /Library/Developer/CommandLineTools
+        # xcode-select --install
+        # brew reinstall -s gcc
     - name: Build wheels
       run: |
         # Since we are linking with the conda installed gnuastro library we need to supply appropriate linking flags
