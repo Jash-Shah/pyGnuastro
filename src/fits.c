@@ -5,13 +5,8 @@
 #include <numpy/arrayobject.h>
 
 #include <Python.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <error.h>
 
 #include <gnuastro/fits.h>
-#include <gnuastro/config.h>
-#include <gnuastro/data.h>
 
 /* Since the Python interface(python.h) was added to Gnuastro in version
    0.19(unreleased as of yet), we include the interface functions from
@@ -41,6 +36,7 @@
 static PyObject *
 img_read(PyObject *self, PyObject *args, PyObject *keywds)
 {
+  int npy_type;
   char *filename, *hdu;
   PyObject *out = NULL;
   gal_data_t *image = NULL;
@@ -63,9 +59,18 @@ img_read(PyObject *self, PyObject *args, PyObject *keywds)
 
   /* Since dims needs to be a pointer to a const. */
   npy_intp* const dims = (npy_intp *)image->dsize;
+  npy_type = gal_python_type_to_numpy(image->type);
+  if (npy_type == 0)
+    {
+      Py_XDECREF(out);
+      PyErr_SetString(PyExc_TypeError,
+                      "Type code of the data read from file is "
+                      "not convertible to a NumPy type.");
+      return NULL;                      
+    }
 
   out = PyArray_SimpleNewFromData(image->ndim, dims,
-                                  gal_python_type_to_numpy(image->type),
+                                  npy_type,
                                   (float *)image->array);
   
   return out;
@@ -78,6 +83,7 @@ img_read(PyObject *self, PyObject *args, PyObject *keywds)
 static PyObject *
 img_write(PyObject *self, PyObject *args, PyObject *keywds)
 {
+  int gal_type;
   gal_data_t *data = NULL;
   PyObject *img_data = NULL;
   PyArrayObject *data_arr = NULL;
@@ -94,11 +100,21 @@ img_write(PyObject *self, PyObject *args, PyObject *keywds)
 
   /* Converting the received Python array data to NumPy array. */
   data_arr = (PyArrayObject *)PyArray_FROM_OT(img_data, NPY_FLOAT32);
+  gal_type = gal_python_type_from_numpy(PyArray_TYPE(data_arr));
+  if (gal_type == 0)
+   {
+      Py_XDECREF(img_data);
+      Py_XDECREF(data_arr);
+      PyErr_SetString(PyExc_TypeError,
+                      "Type code of the data to be written to file"
+                      "is not convertible to a Gnuastro type.");
+      return NULL;                      
+   }
 
   /* Using metadata obtained from the NumPy array to allocate a gal_data_t
      structure which will be used for writing to the output image. */
   data = gal_data_alloc(PyArray_DATA(data_arr),
-                        gal_python_type_from_numpy(PyArray_TYPE(data_arr)),
+                        gal_type,
                         PyArray_NDIM(data_arr),
                         (size_t *)PyArray_DIMS(data_arr),
                         NULL, 0, -1, 1, NULL, NULL, NULL);

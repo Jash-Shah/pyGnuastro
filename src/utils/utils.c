@@ -3,9 +3,6 @@ python -- Functions to assist Python wrappers using Gnuastro's library.
 **********************************************************************/
 #include <gnuastro/config.h>
 
-#include <errno.h>
-#include <error.h>
-
 /* This macro needs to be defined before including any NumPy headers
    to avoid the compiler from raising a warning message. */
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
@@ -21,6 +18,7 @@ python -- Functions to assist Python wrappers using Gnuastro's library.
 /*************************************************************
  **************           Type codes           ***************
  *************************************************************/
+
 /* Convert Gnuastro type to NumPy datatype. Currently only converting types
    directly compatible between the two. */
 int
@@ -40,8 +38,7 @@ gal_python_type_to_numpy(uint8_t type)
     case GAL_TYPE_FLOAT64:   return NPY_FLOAT64;
     case GAL_TYPE_STRING:    return NPY_STRING;
     default:
-      error(EXIT_FAILURE, 0, "%s: type code %d is not convertible"
-            "to NumPy.", __func__, type);
+      return GAL_TYPE_INVALID;
     }
 
   return GAL_TYPE_INVALID;
@@ -71,8 +68,7 @@ gal_python_type_from_numpy(int type)
     case NPY_COMPLEX64:      return GAL_TYPE_COMPLEX64;
     case NPY_STRING:         return GAL_TYPE_STRING;
     default:
-      error(EXIT_FAILURE, 0, "%s: type code %d is not convertible"
-            "to Gnuastro.", __func__, type);
+        return GAL_TYPE_INVALID;
     }
   return GAL_TYPE_INVALID;
 }
