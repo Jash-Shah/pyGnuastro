@@ -2,6 +2,12 @@
 /* This macro needs to be defined before including any NumPy headers
    to avoid the compiler from raising a warning message. */
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+/* This has to be included so that the NumPy C-API can be included
+   in multiple files for a single-extension module. The import_array()
+   function included in the module initialization, is declare static
+   if this macro is not defined. This means that the NumPy C-API doesn't
+   extend to other files (like utils.c) without this macro. */
+#define PY_ARRAY_UNIQUE_SYMBOL pygnuastro_ARRAY_API
 #include <numpy/arrayobject.h>
 
 #include <Python.h>
@@ -224,7 +230,9 @@ PyInit_fits(void)
   if(module==NULL)
     return NULL;
 
-  import_array();
+  if (PyArray_API == NULL)
+    import_array();
+  
   if(PyErr_Occurred()) return NULL;
 
   return module;
