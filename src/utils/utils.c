@@ -6,6 +6,10 @@ python -- Functions to assist Python wrappers using Gnuastro's library.
 /* This macro needs to be defined before including any NumPy headers
    to avoid the compiler from raising a warning message. */
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+/* This has to be included so that the NumPy C-API can be included
+   here without the import_array() function.*/
+#define PY_ARRAY_UNIQUE_SYMBOL pygnuastro_ARRAY_API
+#define NO_IMPORT_ARRAY
 #include <numpy/arrayobject.h>
 
 /* Python Interface headers. */
