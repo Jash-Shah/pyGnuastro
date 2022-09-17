@@ -74,7 +74,7 @@ fits = Extension(name='fits',
 setup(
       # Name of the package as it appears on PyPI
       name="pygnuastro",
-      version=f'0.0.1-dev1',
+      version=f'0.0.1-dev2',
       #
       # Longer description of your project that represents
       # the body of text which users will see when they visit PyPI.
