@@ -31,10 +31,12 @@ it as a NumPy array, then
 .. code-block:: python
 
   import pygnuastro.fits
-  import numpy
-  # Here 'in' will be a NumPy array.
-  in = pygnuastro.fits.img_read(filename = "input.fits", hdu = 0)
-  if gnuastro.fits.img_write(in, "output.fits"):
+
+  # Here 'img' will be a NumPy array.
+  img = pygnuastro.fits.img_read(filename = "input.fits", hdu = "0")
+
+  # The img_write function returns True if the write was successful
+  if pygnuastro.fits.img_write(img, "output.fits"):
     print("Write successful.")
   else:
     print("Error in writing file")
