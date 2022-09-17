@@ -4,7 +4,7 @@ pyGnuastro
 
 |Actions Status| |PyPI Status| |Python Versions|
 
-pyGnuastro is a free software which offer a wide array of functions
+**pyGnuastro** is a free software which offer a wide array of functions
 for astronomical data manipulation and analysis. It is the Python 
 implementation of `Gnuastro Utilities
 <https://www.gnu.org/savannah-checkouts/gnu/gnuastro/gnuastro.html>`_
@@ -12,13 +12,10 @@ and aims to offer all the functionality of Gnuastro
 but with a higher level of abstracion. It also uses NumPy for all its data
 array operations.
 
-Releases on PyPI: <ADD PYPI LINK>
-
-Development occurs on GitHub: <LINK TO THIS REPO>
-
-Installation Instructions: <LINK TO INSTALLATION SECTION>
-
-Documentation: <LINK TO DOCUMENTATION>
+* **Releases on PyPI**: <ADD PYPI LINK>
+* **Development occurs on GitHub**: https://www.github.com/Jash-Shah/pyGnuastro
+* **Installation Instructions**: https://jash-shah.github.io/pyGnuastro/install.html
+* **Documentation**: https://jash-shah.github.io/pyGnuastro/index.html
 
 Reason for a Gnuastro Python Package
 ====================================
@@ -38,12 +35,11 @@ makes data analysis and manipulation more accessible.
 Contributing Code, Documentation, or Feedback
 ---------------------------------------------
 
+To learn more about how to contribute, refer the `Contribute and Report Problems <https://jash-shah.github.io/pyGnuastro/contribute.html>`_
+chapter in the Documentation.
 
-License
--------
-
-pyGnuastro is licensed under the <ADD LICENSE NAME> license - see the
-`LICENSE <LICENSE>`_ file.
+`License <LICENSE.rst>`_
+------------------------
 
 .. |Actions Status| image:: https://github.com/Jash-Shah/PyGnuastro/actions/workflows/build.yml/badge.svg
     :target: https://github.com/Jash-Shah/PyGnuastro/actions
