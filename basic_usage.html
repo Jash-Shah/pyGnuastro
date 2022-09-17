@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Basic Usage &#8212; pyGnuastro v0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contribute and Report Problems" href="contribute.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="basic-usage">
+<h1>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this heading">¶</a></h1>
+<p>pyGnuastro is divided into separate modules(<a class="reference external" href="modules/overview.rst">Overview of the Python Modules</a>)
+and each module can be imported using the <code class="docutils literal notranslate"><span class="pre">'.'</span></code> after the package name as::
+<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pygnuastro.MODULE_NAME</span></code>.</p>
+<p>For Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygnuastro.cosmology</span>
+<span class="c1"># Calling the age function in the cosmology module</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pygnuastro</span><span class="o">.</span><span class="n">cosomology</span><span class="o">.</span><span class="n">age</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Most functions also provide passing arguments as keywords.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygnuastro.cosmology</span> <span class="k">as</span> <span class="nn">cosmo</span>
+<span class="n">proper_distance</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">proper_distance</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mi">65</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+                                        <span class="n">omatter</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+                                        <span class="n">olambda</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                                        <span class="n">oradiation</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For functions which are supposed to return or pass a NumPy array, we take
+an example of a simple program which reads an input FITS image and stores
+it as a NumPy array, then</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygnuastro.fits</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="c1"># Here &#39;in&#39; will be a NumPy array.</span>
+<span class="ow">in</span> <span class="o">=</span> <span class="n">pygnuastro</span><span class="o">.</span><span class="n">fits</span><span class="o">.</span><span class="n">img_read</span><span class="p">(</span><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;input.fits&quot;</span><span class="p">,</span> <span class="n">hdu</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">gnuastro</span><span class="o">.</span><span class="n">fits</span><span class="o">.</span><span class="n">img_write</span><span class="p">(</span><span class="ow">in</span><span class="p">,</span> <span class="s2">&quot;output.fits&quot;</span><span class="p">):</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Write successful.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in writing file&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pyGnuastro</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contribute and Report Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About pyGnuastro</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/overview.html">Overview of the Python Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/cosmology.html">Cosmology (<code class="docutils literal notranslate"><span class="pre">pygnuastro.cosmology</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/fits.html">Fits (<code class="docutils literal notranslate"><span class="pre">pygnuastro.fits</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions/wrappers.html">Python C Extension Modules and Python Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions/how_it_works.html">How It Works - An Example</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Jash-Shah/pyGnuastro/issues">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licenses</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="install.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="contribute.html" title="next chapter">Contribute and Report Problems</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jash Shah.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/basic_usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

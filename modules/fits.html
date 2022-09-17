@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Fits (pygnuastro.fits) &#8212; pyGnuastro v0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API" href="../api.html" />
+    <link rel="prev" title="Cosmology (pygnuastro.cosmology)" href="cosmology.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="fits-pygnuastro-fits">
+<h1>Fits (<code class="docutils literal notranslate"><span class="pre">pygnuastro.fits</span></code>)<a class="headerlink" href="#fits-pygnuastro-fits" title="Permalink to this heading">¶</a></h1>
+<p>The <a class="reference external" href="https://en.wikipedia.org/wiki/FITS">FITS format</a> is the most
+common format to store data (images and tables) in astronomy.
+The <a class="reference external" href="https://heasarc.gsfc.nasa.gov/fitsio/">CFITSIO library</a>
+already provides a very good low-level collection of functions
+for manipulating FITS data. pyGnuastro’s FITS module provides
+access to the <a class="reference external" href="https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/FITS-files.html">Gnuastro FITS library</a>
+functions which provide wrappers for CFITSIO functions. With these,
+it is much easier to read, write, or modify FITS file data, header
+keywords and extensions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This module is currently under development and more functions will be added
+in the future.</p>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.fits.img_read">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.fits.</span></span><span class="sig-name descname"><span class="pre">img_read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.fits.img_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the contents of the ‘hdu’ extension/HDU of
+‘filename’ into a NumPy array and returns it. Note
+that this function only reads the main data within
+the requested FITS extension, the WCS will not be
+read into the returned dataset.</p>
+<p>Args:
+filename (str): Name of the FITS file(with the ‘.fits’ ext)
+hdu (str): The HDU number of the FITS file to read</p>
+<p>Returns:
+np.array: The Numpy array with the data read from the hdu of
+the given FITS image</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.fits.img_write">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.fits.</span></span><span class="sig-name descname"><span class="pre">img_write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.fits.img_write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the input ‘data’ into the FITS file named
+‘filename’. Also, add the program’s name(‘program
+string’) to the newly created HDU/extension.</p>
+<p>Args:
+data (np.array/list): The data array to be written
+filename (str): Name of the output file with extension
+program_string (str): Program’s name. Written out to
+the newly created extension</p>
+<p>Returns:
+bool: True if the image write was successful</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pyGnuastro</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute and Report Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About pyGnuastro</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="overview.html">Overview of the Python Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cosmology.html">Cosmology (<code class="docutils literal notranslate"><span class="pre">pygnuastro.cosmology</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fits (<code class="docutils literal notranslate"><span class="pre">pygnuastro.fits</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extensions/wrappers.html">Python C Extension Modules and Python Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions/how_it_works.html">How It Works - An Example</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Jash-Shah/pyGnuastro/issues">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Licenses</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="overview.html">Overview of the Python Modules</a><ul>
+      <li>Previous: <a href="cosmology.html" title="previous chapter">Cosmology (<code class="docutils literal notranslate"><span class="pre">pygnuastro.cosmology</span></code>)</a></li>
+      <li>Next: <a href="../api.html" title="next chapter">API</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jash Shah.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modules/fits.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

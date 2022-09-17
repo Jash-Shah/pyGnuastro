@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Python C Extension Modules and Python Wrappers &#8212; pyGnuastro v0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How It Works - An Example" href="how_it_works.html" />
+    <link rel="prev" title="pygnuastro.fits.img_write" href="../generated/pygnuastro.fits.img_write.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="python-c-extension-modules-and-python-wrappers">
+<h1>Python C Extension Modules and Python Wrappers<a class="headerlink" href="#python-c-extension-modules-and-python-wrappers" title="Permalink to this heading">¶</a></h1>
+<p>pyGnuastro is a low-level wrapper infrastructure over the <a class="reference external" href="https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/Gnuastro-library.html">Gnuastro Library</a>.
+The source of the Python modules are <code class="docutils literal notranslate"><span class="pre">C</span></code> wrapper functions which are in
+the <code class="docutils literal notranslate"><span class="pre">src/</span></code> directory. These functions are basicly <a class="reference external" href="https://docs.python.org/3/extending/extending.html">Python Extension Modules</a>, which internally make
+use of the Gnuastro Library functions. The basic format of a wrapper function
+is as follows:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Python.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span><span class="w"> </span><span class="n">PyObject</span><span class="w"></span>
+<span class="o">*</span><span class="nf">function_name</span><span class="p">(</span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="cm">/* Initialize the C variables here which will be</span>
+<span class="cm">     assigned the value from parsing the Python input arguments.</span>
+<span class="cm">     This step parses the input args based on a format</span>
+<span class="cm">     string and stores them in the C variables initialized above. */</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">PyArg_ParseTuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="s">&quot;format_string&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">var1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">var2</span><span class="p">,</span><span class="w"> </span><span class="p">...))</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="cm">/* Now, we call the Gnuastro library function with those arguments */</span><span class="w"></span>
+<span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gal_function_name</span><span class="p">(</span><span class="n">var1</span><span class="p">,</span><span class="w"> </span><span class="n">var2</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span><span class="w"></span>
+
+<span class="w">  </span><span class="cm">/* Before returning the result, we need to convert it to</span>
+<span class="cm">     a PyObject again, so that it can be interprested by Python. */</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">PyFloat_FromDouble</span><span class="p">(</span><span class="n">result</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+
+
+<span class="k">static</span><span class="w"> </span><span class="n">PyMethodDef</span><span class="w"></span>
+<span class="n">ModuleMethods</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="cm">/* When using only METH_VARARGS, the function should expect the</span>
+<span class="cm">  Python-level parameters to be passed in as a tuple acceptable for</span>
+<span class="cm">  parsing via PyArg_ParseTuple(). We can also add functionality to</span>
+<span class="cm">  pass keyword arguments. */</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="s">&quot;function_name&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">function_name</span><span class="p">,</span><span class="w"> </span><span class="n">METH_VARARGS</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Perform a function.&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">}</span><span class="w"> </span><span class="cm">/* Sentinel */</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">PyModuleDef</span><span class="w"></span>
+<span class="n">Module</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">PyModuleDef_HEAD_INIT</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;MODULE_NAME&quot;</span><span class="p">,</span><span class="w">       </span><span class="cm">/* name of module                   */</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;Module Definition&quot;</span><span class="p">,</span><span class="w"> </span><span class="cm">/* module documnetation, maybe NULL */</span><span class="w"></span>
+<span class="w">  </span><span class="mi">-1</span><span class="p">,</span><span class="w">                  </span><span class="cm">/* size of per-interpreter state of</span>
+<span class="cm">                          the module, or -1 if the module</span>
+<span class="cm">                          keeps state in global variables. */</span><span class="w"></span>
+<span class="w">  </span><span class="n">ModuleMethods</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+
+
+<span class="cm">/*</span>
+<span class="cm">The initialization function must be named PyInit_name(), where name is</span>
+<span class="cm">the name of the module, and should be the only non-static item defined</span>
+<span class="cm">in the module file. PyMODINIT_FUNC declares the function as</span>
+<span class="cm">PyObject * return type and declares any special linkage declarations</span>
+<span class="cm">required by the platform.</span>
+<span class="cm">*/</span><span class="w"></span>
+<span class="n">PyMODINIT_FUNC</span><span class="w"></span>
+<span class="nf">PyInit_spam</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="cm">/* PyModule_Create(), which returns a module object, and inserts</span>
+<span class="cm">  built-in function objects into the newly created module based upon</span>
+<span class="cm">  the method table (an array of PyMethodDef structures) found in the</span>
+<span class="cm">  module definition. */</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">PyModule_Create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pygnuastromodule</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>For modules which deal with <code class="docutils literal notranslate"><span class="pre">NumPy</span></code>, we make use of various functions
+provided by the <a class="reference external" href="https://numpy.org/doc/stable/reference/c-api/index.html">NumPy C-API</a>.
+The core data structure of Gnuastro is the <a class="reference external" href="https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/Generic-data-container.html">gal_data_t</a>.
+If any function in the Gnuastro Library is passed or returns a value of
+this type, then we make use of functions provided by the NumPy C-API, to convert it
+to a <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> array.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pyGnuastro</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute and Report Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About pyGnuastro</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/overview.html">Overview of the Python Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/cosmology.html">Cosmology (<code class="docutils literal notranslate"><span class="pre">pygnuastro.cosmology</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/fits.html">Fits (<code class="docutils literal notranslate"><span class="pre">pygnuastro.fits</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python C Extension Modules and Python Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_it_works.html">How It Works - An Example</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Jash-Shah/pyGnuastro/issues">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Licenses</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../generated/pygnuastro.fits.img_write.html" title="previous chapter">pygnuastro.fits.img_write</a></li>
+      <li>Next: <a href="how_it_works.html" title="next chapter">How It Works - An Example</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jash Shah.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/extensions/wrappers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

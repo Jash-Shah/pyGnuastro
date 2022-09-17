@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Cosmology (pygnuastro.cosmology) &#8212; pyGnuastro v0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fits (pygnuastro.fits)" href="fits.html" />
+    <link rel="prev" title="Overview of the Python Modules" href="overview.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="cosmology-pygnuastro-cosmology">
+<h1>Cosmology (<code class="docutils literal notranslate"><span class="pre">pygnuastro.cosmology</span></code>)<a class="headerlink" href="#cosmology-pygnuastro-cosmology" title="Permalink to this heading">¶</a></h1>
+<p>This library does the main cosmological calculations that are commonly
+necessary in extra-galactic astronomical studies. The main variable in
+this context is the redshift (<code class="docutils literal notranslate"><span class="pre">z</span></code>). The cosmological input parameters in
+the functions below are <code class="docutils literal notranslate"><span class="pre">H0,</span> <span class="pre">o_lambda_0,</span> <span class="pre">o_matter_0,</span> <span class="pre">o_radiation_0</span></code> which
+respectively represent the current (at redshift 0) expansion rate (Hubble
+constant in units of <code class="docutils literal notranslate"><span class="pre">km/sec/Mpc</span></code>), cosmological constant (<code class="docutils literal notranslate"><span class="pre">Λ</span></code>), matter
+and radiation densities. The <code class="docutils literal notranslate"><span class="pre">pygnuastro.cosmology</span></code> module provides the
+same functions as it’s <a class="reference external" href="https://www.gnu.org/savannah-checkouts/gnu/gnuastro/manual/html_node/Cosmology-library.html">Gnuastro Library counterpart</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For all functions below, the redshift(<code class="docutils literal notranslate"><span class="pre">z</span></code>) is the only required argument. The default values
+taken by the other arguments are: <code class="docutils literal notranslate"><span class="pre">H0</span> <span class="pre">=</span> <span class="pre">67.66,</span> <span class="pre">olambda</span> <span class="pre">=</span> <span class="pre">0.6889,</span> <span class="pre">omatter</span> <span class="pre">=</span> <span class="pre">0.3111,</span>
+<span class="pre">oradiation</span> <span class="pre">=</span> <span class="pre">0.0</span></code>. (Constants from <a class="reference external" href="https://arxiv.org/abs/1807.06209">Plank 2018 (arXiv:1807.06209, Table 2)</a>)
+As the summation of the cosmological constants(<code class="docutils literal notranslate"><span class="pre">olambda,</span> <span class="pre">omatter</span></code> and <code class="docutils literal notranslate"><span class="pre">oradiation</span></code>)
+should be 1, in order to pass custom values for these, all three have to be provided by the
+user.</p>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.age">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">age</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.age" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the age of the universe at redshift z in units of Giga years.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The age of the universe at redshit z in units of Giga years.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.angular_distance">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">angular_distance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.angular_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angular diameter distance to an object at redshift z in units of Mega parsecs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The angular diameter distance to an           object at redshift z in units of Mega           parsecs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.to_absolute_mag">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">to_absolute_mag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.to_absolute_mag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the conversion from apparent to absolute magnitude for an object at redshift z. This value has to be added to the apparent magnitude to give the absolute magnitude of an object at redshift z.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The conversion from apparent to absolute           magnitude for an object at redshift z. This           value has to be added to the apparent magnitude           to give the absolute magnitude of an object at           redshift z.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.critical_density">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">critical_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.critical_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the critical density at redshift z in units of g/cm3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The age of the universe at redshit z in units of Giga years.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.comoving_volume">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">comoving_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.comoving_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the comoving volume over 4pi stradian to z in units of Mega parsecs cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The comoving volume over 4pi stradian           to z in units of Mega parsecs cube.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.proper_distance">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">proper_distance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.proper_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the proper distance to an object at redshift z in units of Mega parsecs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The proper distance to an object at           redshift z in units of Mega parsecs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.luminosity_distance">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">luminosity_distance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.luminosity_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the luminosity diameter distance to an object at redshift z in units of Mega parsecs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The luminosity diameter distance to an           object at redshift z in units of Mega parsecs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.distance_modulus">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">distance_modulus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.distance_modulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance modulus at redshift z (with no units).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The critical density at redshift z in           units of g/cm3.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.velocity_from_z">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">velocity_from_z</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.velocity_from_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the velocity (in km/s) corresponding to the given redshift (z).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The velocity (in km/s) corresponding to           the given redshift (z).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygnuastro.cosmology.z_from_velocity">
+<span class="sig-prename descclassname"><span class="pre">pygnuastro.cosmology.</span></span><span class="sig-name descname"><span class="pre">z_from_velocity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygnuastro.cosmology.z_from_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the redshift corresponding to the given velocity (v in km/s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em>) – Redshift</p></li>
+<li><p><strong>H0</strong> (<em>float/None</em>) – Hubble constant in units of km/sec/Mpc</p></li>
+<li><p><strong>olambda</strong> (<em>float/None</em>) – Cosmological Constant</p></li>
+<li><p><strong>omatter</strong> (<em>float/None</em>) – Matter Density</p></li>
+<li><p><strong>oradiation</strong> (<em>float/None</em>) – Radiation Density</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The redshift corresponding to the given           velocity (v in km/s).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pyGnuastro</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute and Report Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About pyGnuastro</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="overview.html">Overview of the Python Modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cosmology (<code class="docutils literal notranslate"><span class="pre">pygnuastro.cosmology</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fits.html">Fits (<code class="docutils literal notranslate"><span class="pre">pygnuastro.fits</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extensions/wrappers.html">Python C Extension Modules and Python Wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions/how_it_works.html">How It Works - An Example</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Jash-Shah/pyGnuastro/issues">Known Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">Licenses</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="overview.html">Overview of the Python Modules</a><ul>
+      <li>Previous: <a href="overview.html" title="previous chapter">Overview of the Python Modules</a></li>
+      <li>Next: <a href="fits.html" title="next chapter">Fits (<code class="docutils literal notranslate"><span class="pre">pygnuastro.fits</span></code>)</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jash Shah.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modules/cosmology.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
