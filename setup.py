@@ -39,7 +39,7 @@ src_dir = "src"
 
 # These arguments will be common while initializing
 # all Extension modules. Hence, can be defined here only once.
-default_ext_args = dict(include_dirs=["/usr/include",
+default_ext_args = dict(include_dirs=["/usr/local/include",
                                       get_include(), "."],
                         libraries=["gnuastro"],
                         library_dirs=["/usr/local/lib"])
@@ -86,10 +86,10 @@ setup(
       author_email="jash28582@gmail.com",
       #
       # Project Home-Page url
-      url="http://www.gnu.org/software/gnuastro/manual/",
+      url="https://github.com/Jash-Shah/pyGnuastro/",
       project_urls={
         "Manual": "http://www.gnu.org/software/gnuastro/manual/",
-        "Issues": "https://github.com/Jash-Shah/PyGnuastro/issues",},
+        "Issues": "https://github.com/Jash-Shah/pyGnuastro/issues",},
       #
       # Classifiers to help users find the project by categorizing it.
       classifiers=[

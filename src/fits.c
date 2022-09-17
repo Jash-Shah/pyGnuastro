@@ -164,19 +164,32 @@ FitsMethods[] =
     "img_read",
     (PyCFunction)(void (*)(void))img_read,
     METH_VARARGS | METH_KEYWORDS,
-    "Reads the contents of the 'hdu' extension/HDU of "
-    "'filename' into a NumPy array and returns it. Note "
-    "that this function only reads the main data within "
-    "the requested FITS extension, the WCS will not be "
-    "read into the returned dataset."
+    "Reads the contents of the 'hdu' extension/HDU of\n"
+    "'filename' into a NumPy array and returns it. Note\n"
+    "that this function only reads the main data within\n"
+    "the requested FITS extension, the WCS will not be\n"
+    "read into the returned dataset.\n\n"
+    "Args:\n"
+        "filename (str): Name of the FITS file(with the '.fits' ext)\n"
+        "hdu (str): The HDU number of the FITS file to read\n\n"
+    "Returns:\n"
+        "np.array: The Numpy array with the data read from the hdu of\n"
+                  "the given FITS image\n"
   },
   {
     "img_write",
     (PyCFunction)(void (*)(void))img_write,
     METH_VARARGS | METH_KEYWORDS,
-    "Write the input 'data' into the FITS file named "
-    "'filename'. Also, add the program's name('program "
-    "string') to the newly created HDU/extension."
+    "Write the input 'data' into the FITS file named\n"
+    "'filename'. Also, add the program's name('program\n"
+    "string') to the newly created HDU/extension.\n\n"
+    "Args:\n"
+        "data (np.array/list): The data array to be written\n"
+        "filename (str): Name of the output file with extension\n"
+        "program_string (str): Program's name. Written out to\n"
+                              "the newly created extension\n\n"
+    "Returns:\n"
+        "bool: True if the image write was successful\n"
   },
   {NULL, NULL, 0, NULL}, /* Sentinel */
 };

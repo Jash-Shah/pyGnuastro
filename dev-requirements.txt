@@ -4,3 +4,4 @@ twine
 setuptools
 auditwheel
 pytest
+sphinx
